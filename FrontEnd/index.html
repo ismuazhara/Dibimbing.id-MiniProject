@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore product details, available variations, and stock.">
+  <meta name="theme-color" content="#f8f7f3">
+  <title>Product details | United By Blue</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="api-config.js" defer></script>
+  <script src="api-client.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="announcement">
+    <a href="#bundle">BUY 2, GET 2 FREE: WARMEST SOCK <span aria-hidden="true">·</span> ENDS 10/18</a>
+  </div>
+  <div class="shipping-strip">ALL $30+ ORDERS SHIP FREE <span aria-hidden="true">—</span> <a href="#shipping">SHOP NEW ARRIVALS</a></div>
+
+  <header class="site-header">
+    <button class="icon-button menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#recommendations">New Arrivals</a>
+      <a href="#recommendations">Bags</a>
+      <a href="#main" aria-current="page">Socks</a>
+      <a href="#details">Accessories</a>
+      <a href="#details">Household</a>
+      <a href="#details">Apparel</a>
+      <a href="#impact">Mission</a>
+      <a href="#bundle">Sale</a>
+    </nav>
+    <a class="brand" href="#" aria-label="United By Blue home">
+      <span class="brand-mark" aria-hidden="true">UBB</span>
+      <span>UNITED BY BLUE</span>
+    </a>
+    <div class="header-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+      </button>
+      <button class="icon-button cart-toggle" type="button" aria-label="Open shopping bag">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
+        <span class="cart-count" aria-label="0 items in bag">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="#">Home</a><span>/</span><a href="#main">Socks</a><span>/</span><span class="product-breadcrumb" aria-current="page"></span>
+    </div>
+
+    <p class="api-state" id="product-state" role="status" aria-live="polite">Loading product…</p>
+    <section class="product-layout" aria-labelledby="product-title" hidden>
+      <div class="gallery" aria-label="Product images">
+        <div class="thumbnail-list" role="list" aria-label="Choose a product image">
+        </div>
+        <div class="main-image-wrap">
+          <button class="main-image-button" type="button" aria-label="Enlarge product image">
+            <img class="main-image" alt="">
+          </button>
+          <span class="image-count">1 / 1</span>
+          <span class="image-note">Product photo</span>
+        </div>
+      </div>
+
+      <div class="product-info">
+        <h1 id="product-title"></h1>
+        <div class="price-row"><span class="price"></span><span class="price-caption"></span></div>
+        <p class="promo-copy" id="bundle"><span class="promo-icon" aria-hidden="true">✳</span><strong>Mix any 3 socks, save 15%.</strong> Put any three of our <a href="#recommendations">socks</a> in your cart and 15% comes off each one. No code needed.</p>
+
+        <fieldset class="option-group color-options">
+          <legend>Color: <strong class="selected-color-label">Choose a color</strong></legend>
+          <div class="swatches"></div>
+        </fieldset>
+
+        <fieldset class="option-group size-options">
+          <legend>Size: <strong class="selected-size-label">Choose a size</strong></legend>
+          <div class="size-row">
+            <div class="size-buttons"></div>
+            <button class="size-guide-link" type="button" data-open-size-guide>Size guide</button>
+          </div>
+          <p class="size-help" role="status" aria-live="polite">Choose a color to view its sizes and availability.</p>
+        </fieldset>
+
+        <div class="purchase-row">
+          <div class="quantity-control" aria-label="Quantity">
+            <button type="button" class="quantity-change" data-step="-1" aria-label="Decrease quantity">−</button>
+            <output class="quantity-value" aria-live="polite">1</output>
+            <button type="button" class="quantity-change" data-step="1" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="add-to-cart" type="button" disabled>ADD TO BAG <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="selection-message" role="status" aria-live="polite"></p>
+        <p class="payment-note">Pay in 4 interest-free payments with <strong>Shop Pay</strong></p>
+        <div class="shipping-inline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v12H3zM14 10h4l3 3v5h-7z"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/></svg><span>This item ships free!</span></div>
+        <div class="trust-mini">
+          <div><span aria-hidden="true">↗</span> Free shipping over $30</div>
+          <div><span aria-hidden="true">↺</span> Free returns for 90 days</div>
+          <div><span aria-hidden="true">✳</span> Guaranteed for life</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shipping-benefits product-dependent" id="shipping" aria-label="Shipping and product guarantees" hidden>
+      <article>
+        <div class="benefit-icon" aria-hidden="true">↗</div>
+        <div><h2>Free Shipping Over $30</h2><p>Free standard shipping on US orders over <strong>$30</strong>. Orders under $30 ship for $5. Standard delivery: 3–4 business days after a 1–2 day processing window.</p><a href="#shipping">Full shipping details →</a></div>
+      </article>
+      <article>
+        <div class="benefit-icon" aria-hidden="true">↺</div>
+        <div><h2>Free Returns for 90 Days, Even Worn</h2><p>Wear them. If they’re not right, send them back within <strong>90 days</strong>, worn or washed, for a full refund. Return shipping is free.</p><a href="#shipping">Start a return or exchange →</a></div>
+      </article>
+      <article>
+        <div class="benefit-icon" aria-hidden="true">✳</div>
+        <div><h2>Guaranteed for Life</h2><p>If a pair wears out or gets a hole, we’ll send you a new pair free, for as long as you own them. Every purchase also removes <strong>1 lb of trash</strong> from oceans and waterways.</p><a href="#impact">How replacements work →</a></div>
+      </article>
+    </section>
+
+    <section class="details-section product-dependent" id="details" hidden>
+      <div class="details-heading">
+        <p class="eyebrow">PRODUCT DETAILS</p>
+        <h2 class="details-title"></h2>
+      </div>
+      <div class="details-copy"><p class="product-description"></p></div>
+    </section>
+
+    <section class="specs-section product-dependent" id="impact" hidden>
+      <div class="spec-card sizing-card">
+        <p class="eyebrow">A COMFORTABLE FIT</p><h2>Find your size.</h2>
+        <p>Choose from the sizes and availability listed for this product.</p>
+        <div class="size-table product-size-list"></div>
+        <button type="button" class="text-button" data-open-size-guide>View size guide →</button>
+      </div>
+    </section>
+
+    <section class="recommendations-section product-dependent" id="recommendations" hidden>
+      <div class="section-heading"><div><p class="eyebrow">MORE FOR YOUR NEXT ADVENTURE</p><h2>You may also like</h2></div><div class="carousel-controls"><button type="button" aria-label="Scroll products left" data-scroll="-1">←</button><button type="button" aria-label="Scroll products right" data-scroll="1">→</button></div></div>
+      <div class="product-cards">
+        <article class="recommendation-card"><a href="#main" class="recommendation-image"><img src="https://unitedbyblue.com/cdn/shop/products/EM6A0064.jpg?v=1762440968&width=560" alt="Red Bison Wool Trail Socks" loading="lazy"></a><p class="eyebrow">OUTDOOR FAVORITE</p><h3><a href="#main">Bison Wool Trail Sock</a></h3><p class="recommendation-price">$32.00</p><button type="button" class="quick-add" data-quick-add="Bison Wool Trail Sock">QUICK ADD <span aria-hidden="true">＋</span></button></article>
+        <article class="recommendation-card"><a href="#main" class="recommendation-image"><img src="https://unitedbyblue.com/cdn/shop/products/ULTIMATEBISONSOCK_NAVY_709-001-13224_8207.jpg?v=1762439539&width=560" alt="Navy Ultimate Bison Wool Sock" loading="lazy"></a><p class="eyebrow">BEST SELLER</p><h3><a href="#main">The Ultimate Bison Wool Sock</a></h3><p class="recommendation-price">$44.00</p><button type="button" class="quick-add" data-quick-add="The Ultimate Bison Wool Sock">QUICK ADD <span aria-hidden="true">＋</span></button></article>
+        <article class="recommendation-card"><a href="#main" class="recommendation-image"><img src="https://unitedbyblue.com/cdn/shop/files/web-cf-UnitedByBlue_r?width=560" alt="Yak wool everyday crew socks" loading="lazy"></a><p class="eyebrow">EVERYDAY ESSENTIAL</p><h3><a href="#main">Yak Wool Everyday Crew Sock</a></h3><p class="recommendation-price">$28.00</p><button type="button" class="quick-add" data-quick-add="Yak Wool Everyday Crew Sock">QUICK ADD <span aria-hidden="true">＋</span></button></article>
+      </div>
+    </section>
+
+    <section class="reviews-section product-dependent" id="reviews" hidden>
+      <div><p class="eyebrow">KIND WORDS, WARM FEET</p><h2>Reviews</h2><p>Be the first to share what you think about these socks.</p></div><button class="outline-button" type="button" data-review>WRITE A REVIEW</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="#"><span class="brand-mark" aria-hidden="true">UBB</span><span>UNITED BY BLUE</span></a>
+    <p>Making good things, with a little less waste.</p>
+    <div><a href="#shipping">Shipping & returns</a><a href="#impact">Our impact</a><a href="#main">Back to top ↑</a></div>
+    <small>© 2026 United By Blue. Made for the outdoors.</small>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <div class="drawer-backdrop" hidden></div>
+  <aside class="cart-drawer" aria-label="Shopping bag" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="drawer-header"><h2>Your bag <span class="drawer-count">(0)</span></h2><button type="button" class="drawer-close icon-button" aria-label="Close shopping bag">×</button></div>
+    <div class="cart-content"></div>
+    <div class="drawer-footer"><p class="bundle-progress"></p><div class="subtotal" aria-live="polite"></div><p class="tax-note">Taxes and shipping calculated at checkout.</p><button type="button" class="checkout-button">CHECK OUT <span aria-hidden="true">→</span></button><button type="button" class="continue-shopping">Continue shopping</button></div>
+  </aside>
+
+  <dialog class="size-dialog" aria-labelledby="size-dialog-title">
+    <button class="dialog-close" type="button" aria-label="Close size guide">×</button>
+    <p class="eyebrow">THE RIGHT FIT, EVERY TIME</p><h2 id="size-dialog-title">Boot sock size guide</h2>
+    <p>Choose the size that includes your usual shoe size for a comfortable, cushioned fit.</p>
+    <div class="size-table dialog-size-list"></div>
+    <button type="button" class="dialog-done">GOT IT</button>
+  </dialog>
+
+  <dialog class="image-dialog" aria-label="Product image viewer">
+    <button type="button" class="dialog-close image-dialog-close" aria-label="Close image viewer">×</button>
+    <button type="button" class="image-arrow image-prev" aria-label="Previous image">‹</button>
+    <img src="" alt="">
+    <button type="button" class="image-arrow image-next" aria-label="Next image">›</button>
+  </dialog>
+</body>
+</html>

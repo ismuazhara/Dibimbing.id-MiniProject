@@ -1,0 +1,9 @@
+Role: jadilah seorang Product Owner
+
+Context: Buatkan saya PRD dengan schema, user story, acceptance criteria
+
+Specification: Tambahkan validasi validasi untuk input
+
+Guardrails: Pedoman pengerjaan ini ada di file @Practical Guidance - Modern Back-End Development with AI.docx
+
+Output: masukkan output ke dalam folder Context/prd.md

@@ -1,0 +1,390 @@
+openapi: 3.1.0
+info:
+  title: Product Catalog API
+  version: 1.0.0
+  description: >-
+    REST API for listing, reading, creating, replacing, and deleting products.
+    Error responses follow RFC 9457 Problem Details.
+servers:
+  - url: /
+    description: Current host
+tags:
+  - name: Products
+    description: Product catalog CRUD operations
+paths:
+  /api/products:
+    get:
+      tags: [Products]
+      operationId: listProducts
+      summary: List products
+      responses:
+        "200":
+          description: Product list, which may be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductListResponse"
+              example:
+                data: []
+                meta:
+                  total: 0
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags: [Products]
+      operationId: createProduct
+      summary: Create a product
+      description: >-
+        Creates a product and its variants atomically. The server assigns the
+        product ID and derives isAvailable from variant stock.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+            example:
+              name: Ultimate Bison Boot Sock
+              price: 150000
+              currency: IDR
+              image: https://example.com/images/boot-sock.png
+              variants:
+                - color: Coffee
+                  size: S/M
+                  quantity: 8
+                - color: Wild Green
+                  size: M/L
+                  quantity: 4
+              description: Kaus kaki boot tebal dengan bahan hangat, nyaman, dan tahan lama.
+      responses:
+        "201":
+          description: Product created.
+          headers:
+            Location:
+              description: Relative URL of the created product.
+              schema:
+                type: string
+                example: /api/products/123
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/products/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ProductId"
+    get:
+      tags: [Products]
+      operationId: getProduct
+      summary: Get a product
+      responses:
+        "200":
+          description: Product found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags: [Products]
+      operationId: replaceProduct
+      summary: Replace a product
+      description: >-
+        Replaces all editable product fields and the complete variants list.
+        Product ID and isAvailable are server-managed and must not be sent.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+            example:
+              name: Ultimate Bison Boot Sock
+              price: 155000
+              currency: IDR
+              image: https://example.com/images/boot-sock.png
+              variants:
+                - color: Coffee
+                  size: S/M
+                  quantity: 6
+              description: Kaus kaki boot tebal dengan bahan hangat, nyaman, dan tahan lama.
+      responses:
+        "200":
+          description: Product replaced.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags: [Products]
+      operationId: deleteProduct
+      summary: Delete a product
+      responses:
+        "204":
+          description: Product and its variants deleted. No response body.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  parameters:
+    ProductId:
+      name: id
+      in: path
+      required: true
+      description: Positive integer product identifier.
+      schema:
+        type: integer
+        minimum: 1
+      example: 123
+  schemas:
+    ProductInput:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - price
+        - currency
+        - image
+        - variants
+        - description
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 120
+          description: Product name, trimmed before persistence.
+        price:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 9999999999.99
+          multipleOf: 0.01
+          description: Product price expressed in the accompanying currency.
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          pattern: "^[A-Z]{3}$"
+          description: Uppercase ISO 4217 alphabetic currency code.
+          example: USD
+        image:
+          type: string
+          format: uri
+          pattern: "^https?://"
+          description: Absolute HTTP or HTTPS URL for the primary product image.
+        variants:
+          type: array
+          minItems: 1
+          description: Complete list of color-size combinations and their stock; combinations must be unique, ignoring case.
+          items:
+            $ref: "#/components/schemas/ProductVariantInput"
+        description:
+          type: string
+          minLength: 20
+          description: Product description, trimmed before persistence.
+    ProductVariantInput:
+      type: object
+      additionalProperties: false
+      required: [color, size, quantity]
+      properties:
+        color:
+          type: string
+          minLength: 1
+          maxLength: 80
+        size:
+          type: string
+          minLength: 1
+          maxLength: 40
+        quantity:
+          type: integer
+          minimum: 0
+    Product:
+      type: object
+      additionalProperties: false
+      required: [id, name, price, currency, image, variants, description, isAvailable]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          readOnly: true
+        name:
+          type: string
+          minLength: 3
+          maxLength: 120
+        price:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 9999999999.99
+          multipleOf: 0.01
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          pattern: "^[A-Z]{3}$"
+          description: Uppercase ISO 4217 alphabetic currency code.
+          example: USD
+        image:
+          type: string
+          format: uri
+          pattern: "^https?://"
+        variants:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductVariantInput"
+        description:
+          type: string
+          minLength: 20
+        isAvailable:
+          type: boolean
+          readOnly: true
+          description: True when total stock across all variants is greater than zero.
+    ProductResponse:
+      type: object
+      additionalProperties: false
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/Product"
+    ProductListResponse:
+      type: object
+      additionalProperties: false
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        meta:
+          type: object
+          additionalProperties: false
+          required: [total]
+          properties:
+            total:
+              type: integer
+              minimum: 0
+    Problem:
+      type: object
+      description: RFC 9457 Problem Details with documented API extensions.
+      required: [type, title, status, detail, instance]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+          example: https://api.example.com/problems/validation-failed
+        title:
+          type: string
+          example: Validation failed
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          example: One or more fields are invalid.
+        instance:
+          type: string
+          format: uri-reference
+          example: /api/products
+        code:
+          type: string
+          description: Stable application error code, when applicable.
+          example: PRODUCT_NOT_FOUND
+        errors:
+          type: object
+          description: Validation errors keyed by request field path.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            price:
+              - Must be greater than 0
+    ProductNotFoundProblem:
+      allOf:
+        - $ref: "#/components/schemas/Problem"
+        - type: object
+          properties:
+            code:
+              const: PRODUCT_NOT_FOUND
+  responses:
+    BadRequest:
+      description: Invalid path parameter, malformed JSON, or invalid request fields.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+          example:
+            type: https://api.example.com/problems/validation-failed
+            title: Validation failed
+            status: 400
+            detail: One or more fields are invalid.
+            instance: /api/products
+            errors:
+              price:
+                - Must be greater than 0
+    NotFound:
+      description: Product does not exist.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProductNotFoundProblem"
+          example:
+            type: https://api.example.com/problems/product-not-found
+            title: Product not found
+            status: 404
+            detail: No product exists with the requested id.
+            instance: /api/products/123
+            code: PRODUCT_NOT_FOUND
+    Conflict:
+      description: A uniqueness or other data constraint conflicts with the request.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    UnsupportedMediaType:
+      description: Request Content-Type is not supported.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    PayloadTooLarge:
+      description: Request body exceeds the server limit.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    InternalServerError:
+      description: Unexpected server error. Internal details are not exposed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
